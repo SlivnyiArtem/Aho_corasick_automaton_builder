@@ -1,6 +1,7 @@
 def get_abc_from_str(input_str):
     abc = set(input_str)
-    abc.remove(" ")
+    if " " in abc:
+        abc.remove(" ")
     return sorted(abc)
 
 
