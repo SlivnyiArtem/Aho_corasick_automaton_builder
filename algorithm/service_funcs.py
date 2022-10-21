@@ -13,5 +13,4 @@ def get_prefixes(words):
     for word in words:
         for i in range(1, len(word) + 1):
             prefixes_list.append(word[:i])
-    # print(prefixes_list)
     return prefixes_list
