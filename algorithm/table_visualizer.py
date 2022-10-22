@@ -1,6 +1,6 @@
+from tkinter import Tk
 from typing import List
-from algorithm import Aho_Korasic_Node
-
+from algorithm import Aho_Korasic_Node, tablepy
 from prettytable import PrettyTable
 
 
@@ -16,3 +16,18 @@ def visualize_table(columns_list, nodes_list: List[Aho_Korasic_Node.AhoKorasicNo
         res_list.append(node.suffix_link)
         table.add_row(res_list)
     print(table)
+
+
+def tkinter_visualizer(columns_list, nodes_list: List[Aho_Korasic_Node.AhoKorasicNode]):
+    row_list = [tuple(["NodeValue"] + columns_list + ['suffix_link'])]
+    for node in nodes_list:
+        res_list = [node.value]
+        prefix_values_list = list(node.prefix_links.values())
+        res_list += [str(item) for item in prefix_values_list]
+        res_list.append(str(node.suffix_link))
+        row_list.append(tuple(res_list))
+    total_rows = len(row_list)
+    total_columns = len(row_list[0])
+    root = Tk()
+    tablepy.Table(root, total_rows, total_columns, row_list)
+    root.mainloop()
