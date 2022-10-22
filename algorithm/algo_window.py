@@ -2,9 +2,7 @@ from PyQt5 import QtGui
 from PyQt5.QtWidgets import *
 from PyQt5 import QtCore
 
-import graph_visualizer
-from algorithm import service_funcs, Aho_Korasic_Node
-
+from algorithm import service_funcs, Aho_Korasic_Node, graph_visualizer, table_visualizer
 
 class AhoKorasicWindow(QFrame):
     def __init__(self, main_window):
@@ -31,6 +29,13 @@ class AhoKorasicWindow(QFrame):
             node = Aho_Korasic_Node.AhoKorasicNode(prefix, abc, prefixes)
             visualize_dict[(node.value[:-1], node.value)] = node.value[-1]
             node_dict[node.value] = node
+
+        columns_list = []
+        for command_word in abc:
+            columns_list.append(command_word)
+        table_visualizer.visualize_table(columns_list, node_dict.values())
+
+
         graph_visualizer.visualize_graph(visualize_dict)
         '''
         Aho_Korasic_Node.AhoKorasicNode("кас", service_funcs.get_abc_from_str(input_data),

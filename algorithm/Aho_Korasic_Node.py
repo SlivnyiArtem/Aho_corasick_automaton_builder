@@ -13,14 +13,14 @@ class AhoKorasicNode(object):
                 self.prefix_links[command_word] = command_word
             else:
                 self.prefix_links[command_word] = "lambda"
-        '''
-        print(self.value)
-        print(self.abc)
-        print(self.suffix_link)
-        print(self.prefix_links)
-        '''
+
+        # print(self.value)
+        # print(self.abc) #ключи таблицы 1
+        # print(self.suffix_link)  # таблица 2
+        # print(self.prefix_links) #таблица 1
 
     def get_suffix_link(self, input_prefixes):
         for i in range(1, len(self.value)):
             if self.value[i:] in input_prefixes:
-                return sorted(self.value[i:])
+                return self.value[i:]
+                # return sorted(self.value[i:])
