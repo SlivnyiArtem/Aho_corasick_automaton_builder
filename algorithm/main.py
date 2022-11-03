@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 import Aho_Korasic_Node
 import service_funcs
 
@@ -20,7 +19,5 @@ def main():
 
 if __name__ == '__main__':
     main()
-=======
 #if __name__ == "__main__":
 #    calculate(str(input()))
->>>>>>> Stashed changes

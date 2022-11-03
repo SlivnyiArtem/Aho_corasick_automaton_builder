@@ -30,6 +30,11 @@ class AhoKorasicWindow(QFrame):
         super().__init__()
         self.main_window = main_window
 
+        self.dialog_btn = QInputDialog()
+
+        self.dialog_btn =QInputDialog.getText(self, "Ввести словарь", "Словарь:", QLineEdit.Normal, "")
+
+
         self.restart_btn = QPushButton(self)
         self.restart_btn.setGeometry(QtCore.QRect(450, 700, 300, 50))
         self.restart_btn.setObjectName("restart_btn")
