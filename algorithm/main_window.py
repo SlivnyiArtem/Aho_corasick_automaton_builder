@@ -17,6 +17,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.stacked_widget.addWidget(AhoKorasicWindow(self))
 
+
+
     '''def change_window(self, number, frame=None):
         if frame:
             self.stacked_widget.addWidget(frame)

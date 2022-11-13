@@ -1,9 +1,12 @@
+import networkx as nx
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import *
 from PyQt5 import QtCore
 import matplotlib.pyplot as plt
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as cnv
+import networkx as nwx
 
-from algorithm import service_funcs, Aho_Korasic_Node, graph_visualizer
+from algorithm import service_funcs, Aho_Korasic_Node, graph_constructor
 
 
 def calculate(text):
@@ -22,8 +25,12 @@ def calculate(text):
             visualize_dict[(node.value, node.suffix_link)] = "lambda"
         else:
             visualize_dict[(node.value, "")] = "lambda"
+    graph = graph_constructor.form_graph(visualize_dict)
+    return graph, nwx.planar_layout(graph), visualize_dict
 
-    graph_visualizer.visualize_graph(visualize_dict)
+
+
+
 
 
 class AhoKorasicWindow(QFrame):
@@ -42,13 +49,29 @@ class AhoKorasicWindow(QFrame):
         self.restart_btn.setFont(QtGui.QFont('Times', 17))
         self.restart_btn.clicked.connect(self.restart)
 
+
+        self.graph = plt.figure()
+        self.cnv = cnv(self.graph)
+        grid = QGridLayout()
+        self.setLayout(grid)
+        grid.addWidget(self.cnv)
+        grid.addWidget(self.restart_btn, 0,0,5,5)
+
+        self.show()
+
         self.re_translate_ui()
         self.get_text()
 
     def get_text(self):
         text, ok_pressed = QInputDialog.getText(self, "Ввести словарь", "Словарь:", QLineEdit.Normal, "")
         if ok_pressed and text != '':
-            calculate(text)
+            graph, graph_pos, labels = calculate(text)
+
+
+            nwx.draw_planar(graph, with_labels=True)
+            nwx.draw_networkx_edge_labels(graph, graph_pos, edge_labels=labels)
+            self.cnv.draw_idle()
+
 
     def re_translate_ui(self):
         _translate = QtCore.QCoreApplication.translate
