@@ -1,6 +1,7 @@
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import *
 from PyQt5 import QtCore
+import matplotlib.pyplot as plt
 
 from algorithm import service_funcs, Aho_Korasic_Node, graph_visualizer
 
@@ -32,7 +33,7 @@ class AhoKorasicWindow(QFrame):
 
         self.dialog_btn = QInputDialog()
 
-        self.dialog_btn =QInputDialog.getText(self, "Ввести словарь", "Словарь:", QLineEdit.Normal, "")
+        # self.dialog_btn =QInputDialog.getText(self, "Ввести словарь", "Словарь:", QLineEdit.Normal, "")
 
 
         self.restart_btn = QPushButton(self)
@@ -54,4 +55,5 @@ class AhoKorasicWindow(QFrame):
         self.restart_btn.setText(_translate("Preparing", "Другой словарь"))
 
     def restart(self):
+        plt.close("all")
         self.get_text()
