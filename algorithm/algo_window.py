@@ -25,7 +25,12 @@ def calculate(text):
         else:
             visualize_dict[(node.value, "")] = "lambda"
     graph = graph_constructor.form_graph(visualize_dict)
-    return graph, nwx.planar_layout(graph), visualize_dict, prefixes, node_dict, abc
+    is_planar, _ = nwx.check_planarity(nwx.Graph(graph))
+    if is_planar:
+        layout = nwx.planar_layout(graph)
+    else:
+        layout = nwx.circular_layout(graph)
+    return graph, layout, visualize_dict, prefixes, node_dict, abc, is_planar
 
 
 class AhoKorasicWindow(QFrame):
@@ -56,11 +61,14 @@ class AhoKorasicWindow(QFrame):
         text, ok_pressed = QInputDialog.getText(self, "Ввести словарь", "Словарь:", QLineEdit.Normal, "")
         if ok_pressed and text != '':
 
-            graph, graph_pos, labels, prefixes, node_dict, abc = calculate(text)
+            graph, graph_pos, labels, prefixes, node_dict, abc, is_planar = calculate(text)
 
             # self.cnv.flush_events()
 
-            nwx.draw_planar(graph, with_labels=True)
+            if is_planar:
+                nwx.draw_planar(graph, with_labels=True)
+            else:
+                nwx.draw_circular(graph)
             nwx.draw_networkx_edge_labels(graph, graph_pos, edge_labels=labels)
 
 
