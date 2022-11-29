@@ -100,7 +100,13 @@ class AhoKorasicProcessWindow(QWidget):
         if is_planar:
             nwx.draw_planar(graph, with_labels=True)
         else:
-            nwx.draw_circular(graph)
+            # nwx.draw_kamada_kawai(graph) -- NOT WORK
+            nwx.draw_shell(graph, with_labels=True)
+            # nwx.draw_circular(graph, with_labels=True)
+            # nwx.draw_spectral(graph, with_labels=True) #NOT WORK
+            # nwx.draw_spring(graph, with_labels=True) #NOT WORK
+            # nwx.draw_random(graph, with_labels=True) # BAD WORK
+            # nwx.draw_circular(graph)
         nwx.draw_networkx_edge_labels(graph, graph_pos, edge_labels=labels)
 
         self.canvas.draw_idle()
