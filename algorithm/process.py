@@ -57,9 +57,9 @@ class AhoKorasicProcessWindow(QWidget):
 
         for node in node_dict.values():
             if node.suffix_link is not None:
-                visualize_dict[(node.value, node.suffix_link)] = "lambda"
+                visualize_dict[(node.value, node.suffix_link)] = "λ"
             else:
-                visualize_dict[(node.value, "")] = "lambda"
+                visualize_dict[(node.value, "")] = "λ"
         graph = graph_constructor.form_graph(visualize_dict)
         is_planar, _ = nwx.check_planarity(nwx.Graph(graph))
         if is_planar:
@@ -76,7 +76,7 @@ class AhoKorasicProcessWindow(QWidget):
 
     def draw_table(self, prefixes, node_dict, abc):
         abc.sort()
-        columns_list = ["NodeValue"] + abc + ["lambda"]
+        columns_list = ["NodeValue"] + abc + ["λ"]
         self.table.setColumnCount(len(columns_list))
         self.table.setRowCount(len(prefixes))
         self.table.setHorizontalHeaderLabels(columns_list)
@@ -89,7 +89,7 @@ class AhoKorasicProcessWindow(QWidget):
                 else:
                     value = node_dict.get(prefixes[i]).prefix_links.get(columns_list[j])
                 if value is None:
-                    value = "lambda"
+                    value = "λ"
                 self.table.setItem(i, j, QTableWidgetItem(value))
         self.table.resizeColumnsToContents()
         self.table.resizeColumnsToContents()
