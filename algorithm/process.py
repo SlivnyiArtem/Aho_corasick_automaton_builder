@@ -1,23 +1,19 @@
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QWidget, QGridLayout, QGroupBox,\
+    QHBoxLayout, QPushButton, QTableWidget,\
+    QInputDialog, QLineEdit, QTableWidgetItem, QDesktopWidget
 from PyQt5 import QtGui
 from PyQt5 import QtCore
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 import networkx as nwx
 
 from algorithm import service_funcs, Aho_Korasic_Node, graph_constructor
 
 
 class AhoKorasicProcessWindow(QWidget):
-    # NumButtons = ['plot1', 'plot2', 'plot3']
-
     def __init__(self):
 
         super(AhoKorasicProcessWindow, self).__init__()
-        # font = QFont()
-        # font.setPointSize(16)
-
         self.setGeometry(100, 100, 800, 600)
         self.center()
         self.setWindowTitle('AhoCorasik window')
@@ -46,47 +42,7 @@ class AhoKorasicProcessWindow(QWidget):
         self.table = QTableWidget(self)
         self.grid.addWidget(self.table, 100, 0)
 
-        # self.buttonLayout = QHBoxLayout()
-        # self.buttonLayout.addWidget(self.verticalGroupBox)
-
-        # self.grid.addLayout(self.buttonLayout, 0, 0)
-
-
         self.show()
-
-        '''
-        self.restart_btn: QWidget = QPushButton()
-        self.restart_btn.setGeometry(QtCore.QRect(450, 700, 300, 50))
-        self.restart_btn.setObjectName("restart_btn")
-        self.restart_btn.setFont(QtGui.QFont('Times', 17))
-        self.restart_btn.clicked.connect(self.plot3)
-
-        self.buttonLayout = QVBoxLayout()
-        self.buttonLayout.addWidget(self.verticalGroupBox)
-
-        
-        '''
-
-    '''
-    def createVerticalGroupBox(self):
-        self.verticalGroupBox = QGroupBox()
-
-        layout = QVBoxLayout()
-        button = QPushButton("Новый словарь")
-        button.setObjectName("restart_btn")
-        layout.addWidget(button)
-        layout.setSpacing(10)
-        self.verticalGroupBox.setLayout(layout)
-        button.clicked.connect(self.plot3)
-        
-        for i in self.NumButtons:
-            button = QPushButton(i)
-            button.setObjectName(i)
-            layout.addWidget(button)
-            layout.setSpacing(10)
-            self.verticalGroupBox.setLayout(layout)
-            button.clicked.connect(self.submitCommand)
-    '''
 
     def calculate(self, text):
         input_data = text
@@ -115,58 +71,10 @@ class AhoKorasicProcessWindow(QWidget):
     def restart(self):
         text, ok_pressed = QInputDialog.getText(self, "Ввести словарь", "Словарь:", QLineEdit.Normal, "")
         graph, graph_pos, labels, prefixes, node_dict, abc, is_planar = self.calculate(text)
-        self.drawTable(prefixes, node_dict, abc)
-        self.drawScheme(graph, graph_pos, labels, is_planar)
-        '''
-        self.figure.clf()
-        text, ok_pressed = QInputDialog.getText(self, "Ввести словарь", "Словарь:", QLineEdit.Normal, "")
-        graph, graph_pos, labels, prefixes, node_dict, abc, is_planar = calculate(text)
-        # self.grid.update()
-        # self.cnv.flush_events()
+        self.draw_table(prefixes, node_dict, abc)
+        self.draw_scheme(graph, graph_pos, labels, is_planar)
 
-        if is_planar:
-            nx.draw_planar(graph, with_labels=True)
-        else:
-            nx.draw_circular(graph)
-        nx.draw_networkx_edge_labels(graph, graph_pos, edge_labels=labels)
-
-        
-        B = nx.Graph()
-        B.add_nodes_from([1, 2, 3, 4], bipartite=0)
-        B.add_nodes_from(['a', 'b', 'c', 'd', 'e'], bipartite=1)
-        B.add_edges_from([(1, 'a'), (2, 'c'), (3, 'd'), (3, 'e'), (4, 'e'), (4, 'd')])
-
-        X = set(n for n, d in B.nodes(data=True) if d['bipartite'] == 0)
-        Y = set(B) - X
-
-        X = sorted(X, reverse=True)
-        Y = sorted(Y, reverse=True)
-
-        pos = dict()
-        pos.update( (n, (1, i)) for i, n in enumerate(X) ) # put nodes from X at x=1
-        pos.update( (n, (2, i)) for i, n in enumerate(Y) ) # put nodes from Y at x=2
-        nx.draw(B, pos=pos, with_labels=True)
-        self.canvas.draw_idle()
-        '''
-
-    '''
-    def submitCommand(self):
-        eval('self.' + str(self.sender().objectName()) + '()')
-
-    def plot1(self):
-        self.figure.clf()
-
-    def plot2(self):
-        self.figure.clf()
-        self.canvas.draw_idle()
-    '''
-    '''
-    def analyzeText(self):
-        text, ok_pressed = QInputDialog.getText(self, "Ввести словарь", "Словарь:", QLineEdit.Normal, "")
-        return calculate(text)
-    '''
-
-    def drawTable(self, prefixes, node_dict, abc):
+    def draw_table(self, prefixes, node_dict, abc):
         abc.sort()
         columns_list = ["NodeValue"] + abc + ["lambda"]
         self.table.setColumnCount(len(columns_list))
@@ -186,11 +94,8 @@ class AhoKorasicProcessWindow(QWidget):
         self.table.resizeColumnsToContents()
         self.table.resizeColumnsToContents()
 
-    def drawScheme(self, graph, graph_pos, labels, is_planar):
+    def draw_scheme(self, graph, graph_pos, labels, is_planar):
         self.figure.clf()
-
-        # self.grid.update()
-        # self.cnv.flush_events()
 
         if is_planar:
             nwx.draw_planar(graph, with_labels=True)
@@ -198,23 +103,6 @@ class AhoKorasicProcessWindow(QWidget):
             nwx.draw_circular(graph)
         nwx.draw_networkx_edge_labels(graph, graph_pos, edge_labels=labels)
 
-        '''
-        B = nx.Graph()
-        B.add_nodes_from([1, 2, 3, 4], bipartite=0)
-        B.add_nodes_from(['a', 'b', 'c', 'd', 'e'], bipartite=1)
-        B.add_edges_from([(1, 'a'), (2, 'c'), (3, 'd'), (3, 'e'), (4, 'e'), (4, 'd')])
-
-        X = set(n for n, d in B.nodes(data=True) if d['bipartite'] == 0)
-        Y = set(B) - X
-
-        X = sorted(X, reverse=True)
-        Y = sorted(Y, reverse=True)
-
-        pos = dict()
-        pos.update( (n, (1, i)) for i, n in enumerate(X) ) # put nodes from X at x=1
-        pos.update( (n, (2, i)) for i, n in enumerate(Y) ) # put nodes from Y at x=2
-        nx.draw(B, pos=pos, with_labels=True)
-        '''
         self.canvas.draw_idle()
 
     def center(self):
@@ -223,8 +111,3 @@ class AhoKorasicProcessWindow(QWidget):
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 
-    '''
-    def restart(self):
-        plt.close("all")
-        self.plot3()
-    '''
