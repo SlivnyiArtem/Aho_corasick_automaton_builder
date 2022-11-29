@@ -43,15 +43,21 @@ class AhoKorasicWindow(QFrame):
         self.restart_btn.setObjectName("restart_btn")
         self.restart_btn.setFont(QtGui.QFont('Times', 17))
         self.restart_btn.clicked.connect(self.restart)
+
         self.graph = plt.figure()
         self.cnv = cnv(self.graph)
-        self.table = QTableWidget(self)
 
-        grid = QGridLayout()
-        self.setLayout(grid)
-        grid.addWidget(self.cnv)
-        grid.addWidget(self.restart_btn, 100, 100, 5, 5)
-        grid.addWidget(self.table, 100, 0)
+
+
+
+
+        self.grid = QGridLayout()
+        self.setLayout(self.grid)
+        self.grid.addWidget(self.cnv)
+        self.grid.addWidget(self.restart_btn, 100, 100, 5, 5)
+        self.table = QTableWidget(self)
+        self.grid.addWidget(self.table, 100, 0)
+        # self.grid.update()
 
         self.show()
         self.re_translate_ui()
@@ -62,7 +68,7 @@ class AhoKorasicWindow(QFrame):
         if ok_pressed and text != '':
 
             graph, graph_pos, labels, prefixes, node_dict, abc, is_planar = calculate(text)
-
+            self.grid.update()
             # self.cnv.flush_events()
 
             if is_planar:
@@ -70,6 +76,9 @@ class AhoKorasicWindow(QFrame):
             else:
                 nwx.draw_circular(graph)
             nwx.draw_networkx_edge_labels(graph, graph_pos, edge_labels=labels)
+            self.grid.update()
+            self.cnv.draw_idle()
+            # self.cnv.
 
 
 

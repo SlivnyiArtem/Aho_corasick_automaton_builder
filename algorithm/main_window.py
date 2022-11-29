@@ -1,6 +1,7 @@
 import sys
 from PyQt5 import QtWidgets, QtCore
 from algo_window import AhoKorasicWindow
+from algorithm.process import AhoKorasicProcessWindow
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -13,11 +14,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.stacked_widget = QtWidgets.QStackedWidget(self.central_widget)
         self.stacked_widget.setGeometry(QtCore.QRect(0, 0, 1200, 800))
         self.setCentralWidget(self.central_widget)
-        self.stacked_widget.addWidget(AhoKorasicWindow(self))
+        self.stacked_widget.addWidget(AhoKorasicProcessWindow(self))
 
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    w = MainWindow()
+    w = AhoKorasicProcessWindow()
     w.show()
     sys.exit(app.exec_())
