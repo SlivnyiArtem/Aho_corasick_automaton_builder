@@ -6,6 +6,8 @@ from PyQt5 import QtCore
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import networkx as nwx
+from networkx.drawing.nx_agraph import graphviz_layout
+
 
 from algorithm import service_funcs, Aho_Korasic_Node, graph_constructor
 
@@ -52,27 +54,25 @@ class AhoKorasicProcessWindow(QWidget):
         visualize_dict = {}
         for prefix in prefixes:
             node = Aho_Korasic_Node.AhoKorasicNode(prefix, abc, prefixes)
-            visualize_dict[(node.value[:-1], node.value)] = node.value[-1]
+            start_node = node.value[:-1]
+            if start_node == '':
+                start_node = "NullNode"
+            visualize_dict[(start_node, node.value)] = node.value[-1]
             node_dict[node.value] = node
 
         for node in node_dict.values():
             if node.suffix_link is not None:
                 visualize_dict[(node.value, node.suffix_link)] = "λ"
             else:
-                visualize_dict[(node.value, "")] = "λ"
+                visualize_dict[(node.value, "NullNode")] = "λ"
         graph = graph_constructor.form_graph(visualize_dict)
-        is_planar, _ = nwx.check_planarity(nwx.Graph(graph))
-        if is_planar:
-            layout = nwx.planar_layout(graph)
-        else:
-            layout = nwx.circular_layout(graph)
-        return graph, layout, visualize_dict, prefixes, node_dict, abc, is_planar
+        return graph, visualize_dict, prefixes, node_dict, abc
 
     def restart(self):
         text, ok_pressed = QInputDialog.getText(self, "Ввести словарь", "Словарь:", QLineEdit.Normal, "")
-        graph, graph_pos, labels, prefixes, node_dict, abc, is_planar = self.calculate(text)
+        graph, labels, prefixes, node_dict, abc = self.calculate(text)
         self.draw_table(prefixes, node_dict, abc)
-        self.draw_scheme(graph, graph_pos, labels, is_planar)
+        self.draw_scheme(graph, labels)
 
     def draw_table(self, prefixes, node_dict, abc):
         abc.sort()
@@ -92,23 +92,12 @@ class AhoKorasicProcessWindow(QWidget):
                     value = "λ"
                 self.table.setItem(i, j, QTableWidgetItem(value))
         self.table.resizeColumnsToContents()
-        self.table.resizeColumnsToContents()
 
-    def draw_scheme(self, graph, graph_pos, labels, is_planar):
+    def draw_scheme(self, graph, labels):
         self.figure.clf()
-
-        if is_planar:
-            nwx.draw_planar(graph, with_labels=True)
-        else:
-            # nwx.draw_kamada_kawai(graph) -- NOT WORK
-            nwx.draw_shell(graph, with_labels=True)
-            # nwx.draw_circular(graph, with_labels=True)
-            # nwx.draw_spectral(graph, with_labels=True) #NOT WORK
-            # nwx.draw_spring(graph, with_labels=True) #NOT WORK
-            # nwx.draw_random(graph, with_labels=True) # BAD WORK
-            # nwx.draw_circular(graph)
-        nwx.draw_networkx_edge_labels(graph, graph_pos, edge_labels=labels)
-
+        layout = graphviz_layout(graph, prog="dot")
+        nwx.draw(graph, layout, with_labels=True)
+        nwx.draw_networkx_edge_labels(graph, layout, edge_labels=labels)
         self.canvas.draw_idle()
 
     def center(self):

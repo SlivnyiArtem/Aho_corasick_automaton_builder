@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from PyQt5.QtWidgets import QFrame, QInputDialog, QPushButton, QTableWidget, QGridLayout, QLineEdit, QTableWidgetItem
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as cnv
 import networkx as nwx
+import graphviz
 
 from algorithm import service_funcs, Aho_Korasic_Node, graph_constructor
 
@@ -84,10 +85,6 @@ class AhoKorasicWindow(QFrame):
 
             abc.sort()
             columns_list = ["NodeValue"] + abc + ["λ"]
-
-            # self.cnv.flush_events()
-            # self.cnv.draw_idle()
-            # self.cnv.flush_events()
 
 
             self.table.setColumnCount(len(columns_list))
