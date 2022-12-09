@@ -16,7 +16,9 @@ class AhoKorasicProcessWindow(QWidget):
     def __init__(self):
 
         super(AhoKorasicProcessWindow, self).__init__()
-        self.setGeometry(100, 100, 800, 600)
+
+        self.setGeometry(100, 100, 1000, 1000)
+
         self.center()
         self.setWindowTitle('AhoCorasik window')
         self.grid = QGridLayout()
@@ -24,7 +26,7 @@ class AhoKorasicProcessWindow(QWidget):
 
 
         self.verticalGroupBox = QGroupBox()
-        self.verticalGroupBox.setGeometry(0, 0, 100, 100)
+        # self.verticalGroupBox.setGeometry(0, 0, 50, 1000)
         layout = QHBoxLayout()
 
         button = QPushButton("Новый словарь")
@@ -42,7 +44,7 @@ class AhoKorasicProcessWindow(QWidget):
         self.grid.addWidget(self.canvas, 0, 1, 9, 9)
         self.grid.addWidget(self.verticalGroupBox, 300, 5)
         self.table = QTableWidget(self)
-        self.grid.addWidget(self.table, 100, 0)
+        self.grid.addWidget(self.table, 100, 1, 9, 9)
 
         self.show()
 

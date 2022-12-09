@@ -12,7 +12,7 @@ class AhoKorasicNode(object):
             elif command_word in input_prefixes:
                 self.prefix_links[command_word] = command_word
             else:
-                self.prefix_links[command_word] = "lambda"
+                self.prefix_links[command_word] = "\u043f"
 
     def get_suffix_link(self, input_prefixes):
         for i in range(1, len(self.value)):
