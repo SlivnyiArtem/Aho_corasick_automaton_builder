@@ -4,9 +4,10 @@ import matplotlib.pyplot as plt
 from PyQt5.QtWidgets import QFrame, QInputDialog, QPushButton, QTableWidget, QGridLayout, QLineEdit, QTableWidgetItem
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as cnv
 import networkx as nwx
-import graphviz
 
-from algorithm import service_funcs, Aho_Korasic_Node, graph_constructor
+import graph_constructor
+import service_funcs
+import Aho_Korasic_Node
 
 
 def calculate(text):

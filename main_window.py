@@ -1,7 +1,6 @@
 import sys
 from PyQt5 import QtWidgets, QtCore
-from algo_window import AhoKorasicWindow
-from algorithm.process import AhoKorasicProcessWindow
+from process import AhoKorasicProcessWindow
 
 
 class MainWindow(QtWidgets.QMainWindow):

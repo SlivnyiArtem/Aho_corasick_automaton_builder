@@ -8,8 +8,9 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import networkx as nwx
 from networkx.drawing.nx_agraph import graphviz_layout
 
-
-from algorithm import service_funcs, Aho_Korasic_Node, graph_constructor
+import graph_constructor
+import service_funcs
+import Aho_Korasic_Node
 
 
 class AhoKorasicProcessWindow(QWidget):
