@@ -23,9 +23,9 @@ def calculate(text):
 
     for node in node_dict.values():
         if node.suffix_link is not None:
-            visualize_dict[(node.value, node.suffix_link)] = "λ"
+            visualize_dict[(node.value, node.suffix_link)] = "\u03bb"
         else:
-            visualize_dict[(node.value, "")] = "λ"
+            visualize_dict[(node.value, "")] = "\u03bb"
     graph = graph_constructor.form_graph(visualize_dict)
     is_planar, _ = nwx.check_planarity(nwx.Graph(graph))
     if is_planar:
@@ -49,17 +49,12 @@ class AhoKorasicWindow(QFrame):
         self.graph = plt.figure()
         self.cnv = cnv(self.graph)
 
-
-
-
-
         self.grid = QGridLayout()
         self.setLayout(self.grid)
         self.grid.addWidget(self.cnv)
         self.grid.addWidget(self.restart_btn, 100, 100, 5, 5)
         self.table = QTableWidget(self)
         self.grid.addWidget(self.table, 100, 0)
-        # self.grid.update()
 
         self.show()
         self.re_translate_ui()
@@ -82,11 +77,8 @@ class AhoKorasicWindow(QFrame):
             self.cnv.draw_idle()
             # self.cnv.
 
-
-
             abc.sort()
-            columns_list = ["NodeValue"] + abc + ["λ"]
-
+            columns_list = ["NodeValue"] + abc + ["\u03bb"]
 
             self.table.setColumnCount(len(columns_list))
             self.table.setRowCount(len(prefixes))

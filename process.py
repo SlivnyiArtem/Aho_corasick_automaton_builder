@@ -5,6 +5,7 @@ from PyQt5 import QtGui
 from PyQt5 import QtCore
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+import dash
 import networkx as nwx
 from networkx.drawing.nx_agraph import graphviz_layout
 
@@ -65,9 +66,9 @@ class AhoKorasicProcessWindow(QWidget):
 
         for node in node_dict.values():
             if node.suffix_link is not None:
-                visualize_dict[(node.value, node.suffix_link)] = "λ"
+                visualize_dict[(node.value, node.suffix_link)] = "\u03bb"
             else:
-                visualize_dict[(node.value, "NullNode")] = "λ"
+                visualize_dict[(node.value, "NullNode")] = "\u03bb"
         graph = graph_constructor.form_graph(visualize_dict)
         return graph, visualize_dict, prefixes, node_dict, abc
 
@@ -78,8 +79,10 @@ class AhoKorasicProcessWindow(QWidget):
         self.draw_scheme(graph, labels)
 
     def draw_table(self, prefixes, node_dict, abc):
+        prefixes = list(set(prefixes))
+        prefixes.sort(key=lambda k: (len(k), k))
         abc.sort()
-        columns_list = ["NodeValue"] + abc + ["λ"]
+        columns_list = ["NodeValue"] + abc + ["\u03bb"]
         self.table.setColumnCount(len(columns_list))
         self.table.setRowCount(len(prefixes))
         self.table.setHorizontalHeaderLabels(columns_list)
@@ -92,16 +95,17 @@ class AhoKorasicProcessWindow(QWidget):
                 else:
                     value = node_dict.get(prefixes[i]).prefix_links.get(columns_list[j])
                 if value is None:
-                    value = "λ"
+                    value = "\u03bb"
                 self.table.setItem(i, j, QTableWidgetItem(value))
         self.table.resizeColumnsToContents()
 
     def draw_scheme(self, graph, labels):
-        self.figure.clf()
-        layout = graphviz_layout(graph, prog="dot")
-        nwx.draw(graph, layout, with_labels=True)
-        nwx.draw_networkx_edge_labels(graph, layout, edge_labels=labels)
-        self.canvas.draw_idle()
+        # self.figure.clf()
+        # layout = graphviz_layout(graph, prog="dot")
+        # nwx.draw(graph, layout, with_labels=True)
+        # nwx.draw_networkx_edge_labels(graph, layout, edge_labels=labels)
+        # self.canvas.draw_idle()
+        pass
 
     def center(self):
         qr = self.frameGeometry()
