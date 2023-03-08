@@ -123,3 +123,16 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+/venv/
+media/
+__pycache__
+*.pyc
+/.env*
+.idea
+.sqlLite
+
+build/Program/*
+*.toc
+*.pkg
+*.pyz
+*.exe.manifest
