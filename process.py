@@ -1,17 +1,14 @@
-from PyQt5.QtWidgets import QWidget, QGridLayout, QGroupBox,\
-    QHBoxLayout, QPushButton, QTableWidget,\
-    QInputDialog, QLineEdit, QTableWidgetItem, QDesktopWidget
-from PyQt5 import QtGui
-from PyQt5 import QtCore
 import matplotlib.pyplot as plt
+from PyQt5 import QtCore
+from PyQt5 import QtGui
+from PyQt5.QtWidgets import QWidget, QGridLayout, QGroupBox, \
+    QHBoxLayout, QPushButton, QTableWidget, \
+    QInputDialog, QLineEdit, QTableWidgetItem, QDesktopWidget
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-import dash
-import networkx as nwx
-from networkx.drawing.nx_agraph import graphviz_layout
 
+import Aho_Korasic_Node
 import graph_constructor
 import service_funcs
-import Aho_Korasic_Node
 
 
 class AhoKorasicProcessWindow(QWidget):
