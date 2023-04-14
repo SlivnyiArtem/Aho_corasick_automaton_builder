@@ -1,5 +1,6 @@
 from collections import defaultdict
 
+import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from PyQt5 import QtCore, QtGui
@@ -76,7 +77,7 @@ class AhoKorasicProcessWindow(QWidget):
             else:
                 visualize_dict[(node.value, "NullNode")] = "\u03bb"
         graph = graph_constructor.form_graph(visualize_dict)
-        return graph, visualize_dict, prefixes, node_dict, abc, service_funcs.create_node_dict(visualize_dict)
+        return graph, visualize_dict, prefixes, node_dict, abc,   service_funcs.create_node_dict(visualize_dict)
 
     def restart(self):
         text, ok_pressed = QInputDialog.getText(self, "Ввести словарь", "Словарь:", QLineEdit.Normal, "")

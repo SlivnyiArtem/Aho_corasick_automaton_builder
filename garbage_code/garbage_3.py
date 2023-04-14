@@ -11,6 +11,7 @@ from process import AhoKorasicProcessWindow
 def generate_table():
     data = {'Cap': ['A', 'B', 'C', 'F'], 'non-Cap': ['a', 'b', 'c', "F"], 'non-Cap2': ['a', 'b', 'c', "F"]}
     df = pd.DataFrame(data)
+
     return html.Table(
         [html.Tr([html.Th(col) for col in df.columns])] +
         [html.Tr([
@@ -29,13 +30,15 @@ server = app.server
 #     }
 # )
 
-_, _, _, _, _, node_dict = AhoKorasicProcessWindow.calculate("акк акаунт")
+_, visualize_dict, _, _, _, node_dict = AhoKorasicProcessWindow.calculate("акк акаунт")
+# print(node_dict)
+# print(frame)
 
 visited_nodes = set()
 
 cy_edges = []
 cy_nodes = []
-print(node_dict)
+print(visualize_dict)
 for source in node_dict.keys():
     node_targets = node_dict[source]
     for target in node_targets:
