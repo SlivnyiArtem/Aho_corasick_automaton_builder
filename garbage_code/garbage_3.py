@@ -7,15 +7,27 @@ from dash.dependencies import Input, Output
 
 from process import AhoKorasicProcessWindow
 
+
+def generate_table():
+    data = {'Cap': ['A', 'B', 'C', 'F'], 'non-Cap': ['a', 'b', 'c', "F"], 'non-Cap2': ['a', 'b', 'c', "F"]}
+    df = pd.DataFrame(data)
+    return html.Table(
+        [html.Tr([html.Th(col) for col in df.columns])] +
+        [html.Tr([
+            html.Td(df.iloc[i][col]) for col in df.columns
+        ])for i in range(len(df))]
+    )
+
+
 app = dash.Dash(__name__)
 server = app.server
 
-edges = pd.DataFrame.from_dict(
-    {
-        "from": ["earthquake", "earthquake", "burglary", "alarm", "alarm"],
-        "to": ["report", "alarm", "alarm", "John Calls", "Mary Calls"],
-    }
-)
+# edges = pd.DataFrame.from_dict(
+#     {
+#         "from": ["earthquake", "earthquake", "burglary", "alarm", "alarm"],
+#         "to": ["report", "alarm", "alarm", "John Calls", "Mary Calls"],
+#     }
+# )
 
 _, _, _, _, _, node_dict = AhoKorasicProcessWindow.calculate("акк акаунт")
 
@@ -76,11 +88,14 @@ app.layout = html.Div(
                 cyto.Cytoscape(
                     id="cytoscape",
                     elements=cy_edges + cy_nodes,
-                    style={"height": "95vh", "width": "100%"},
+                    style={"height": "75vh", "width": "100%"},
                     stylesheet=stylesheet,
                 )
             ]
         ),
+        html.Div(children=[
+            generate_table()
+        ]),
     ]
 )
 
