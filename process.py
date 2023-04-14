@@ -47,7 +47,8 @@ class AhoKorasicProcessWindow(QWidget):
 
         self.show()
 
-    def calculate(self, text):
+    @staticmethod
+    def calculate(text):
         input_data = text
         prefixes = service_funcs.get_prefixes(service_funcs.get_words_from_str(input_data))
         abc = service_funcs.get_abc_from_str(input_data)
@@ -97,6 +98,7 @@ class AhoKorasicProcessWindow(QWidget):
         self.table.resizeColumnsToContents()
 
     def draw_scheme(self, graph, labels):
+        print(labels)
         # self.figure.clf()
         # layout = graphviz_layout(graph, prog="dot")
         # nwx.draw(graph, layout, with_labels=True)
