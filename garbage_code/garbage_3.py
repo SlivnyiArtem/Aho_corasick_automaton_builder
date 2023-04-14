@@ -1,4 +1,5 @@
 import dash
+import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_cytoscape as cyto
 import dash_html_components as html
@@ -8,16 +9,16 @@ from dash.dependencies import Input, Output
 from process import AhoKorasicProcessWindow
 
 
-def generate_table():
-    data = {'Cap': ['A', 'B', 'C', 'F'], 'non-Cap': ['a', 'b', 'c', "F"], 'non-Cap2': ['a', 'b', 'c', "F"]}
-    df = pd.DataFrame(data)
+def generate_table(visualize_dict):
+    df = pd.DataFrame()
+    print(visualize_dict)
+    for item in visualize_dict.keys():
+        prefix, value = item
+        df.loc[prefix, visualize_dict[item]] = value
+    print(df)
 
-    return html.Table(
-        [html.Tr([html.Th(col) for col in df.columns])] +
-        [html.Tr([
-            html.Td(df.iloc[i][col]) for col in df.columns
-        ])for i in range(len(df))]
-    )
+    table = dbc.Table.from_dataframe(df, index=True)
+    return table
 
 
 app = dash.Dash(__name__)
@@ -38,7 +39,7 @@ visited_nodes = set()
 
 cy_edges = []
 cy_nodes = []
-print(visualize_dict)
+
 for source in node_dict.keys():
     node_targets = node_dict[source]
     for target in node_targets:
@@ -96,9 +97,7 @@ app.layout = html.Div(
                 )
             ]
         ),
-        html.Div(children=[
-            generate_table()
-        ]),
+        html.Div(children=[generate_table(visualize_dict)]),
     ]
 )
 
