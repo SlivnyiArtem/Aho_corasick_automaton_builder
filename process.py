@@ -1,37 +1,36 @@
 from collections import defaultdict
 
 import matplotlib.pyplot as plt
-from PyQt5 import QtCore
-from PyQt5 import QtGui
-from PyQt5.QtWidgets import QWidget, QGridLayout, QGroupBox, \
-    QHBoxLayout, QPushButton, QTableWidget, \
-    QInputDialog, QLineEdit, QTableWidgetItem, QDesktopWidget
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from PyQt5 import QtCore, QtGui
+from PyQt5.QtWidgets import (
+    QDesktopWidget,
+    QGridLayout,
+    QGroupBox,
+    QHBoxLayout,
+    QInputDialog,
+    QLineEdit,
+    QPushButton,
+    QTableWidget,
+    QTableWidgetItem,
+    QWidget,
+)
 
 import Aho_Korasic_Node
 import graph_constructor
 import service_funcs
 
 
-def create_node_dict(labels):
-    node_dict = defaultdict(list)
-    for start, end in labels.keys():
-        node_dict[start].append(end)
-    return node_dict
-
-
 class AhoKorasicProcessWindow(QWidget):
     def __init__(self):
-
         super(AhoKorasicProcessWindow, self).__init__()
 
         self.setGeometry(100, 100, 1000, 1000)
 
         self.center()
-        self.setWindowTitle('AhoCorasik window')
+        self.setWindowTitle("AhoCorasik window")
         self.grid = QGridLayout()
         self.setLayout(self.grid)
-
 
         self.verticalGroupBox = QGroupBox()
         # self.verticalGroupBox.setGeometry(0, 0, 50, 1000)
@@ -40,7 +39,7 @@ class AhoKorasicProcessWindow(QWidget):
         button = QPushButton("Новый словарь")
         button.setObjectName("restart_btn")
         button.setGeometry(QtCore.QRect(450, 700, 300, 50))
-        button.setFont(QtGui.QFont('Times', 17))
+        button.setFont(QtGui.QFont("Times", 17))
         button.clicked.connect(self.restart)
 
         layout.addWidget(button)
@@ -66,7 +65,7 @@ class AhoKorasicProcessWindow(QWidget):
         for prefix in prefixes:
             node = Aho_Korasic_Node.AhoKorasicNode(prefix, abc, prefixes)
             start_node = node.value[:-1]
-            if start_node == '':
+            if start_node == "":
                 start_node = "NullNode"
             visualize_dict[(start_node, node.value)] = node.value[-1]
             node_dict[node.value] = node
@@ -77,7 +76,7 @@ class AhoKorasicProcessWindow(QWidget):
             else:
                 visualize_dict[(node.value, "NullNode")] = "\u03bb"
         graph = graph_constructor.form_graph(visualize_dict)
-        return graph, visualize_dict, prefixes, node_dict, abc, create_node_dict(visualize_dict)
+        return graph, visualize_dict, prefixes, node_dict, abc, service_funcs.create_node_dict(visualize_dict)
 
     def restart(self):
         text, ok_pressed = QInputDialog.getText(self, "Ввести словарь", "Словарь:", QLineEdit.Normal, "")
@@ -120,4 +119,3 @@ class AhoKorasicProcessWindow(QWidget):
         cp = QDesktopWidget().availableGeometry().center()
         qr.moveCenter(cp)
         self.move(qr.topLeft())
-

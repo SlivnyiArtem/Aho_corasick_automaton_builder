@@ -1,3 +1,6 @@
+from collections import defaultdict
+
+
 def get_abc_from_str(input_str):
     abc = set(input_str)
     if " " in abc:
@@ -15,3 +18,10 @@ def get_prefixes(words):
         for i in range(1, len(word) + 1):
             prefixes_list.append(word[:i])
     return prefixes_list
+
+
+def create_node_dict(labels):
+    node_dict = defaultdict(list)
+    for start, end in labels.keys():
+        node_dict[start].append(end)
+    return node_dict

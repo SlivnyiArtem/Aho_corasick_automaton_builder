@@ -1,17 +1,21 @@
 import dash
 import dash_core_components as dcc
-from dash.dependencies import Input, Output
 import dash_cytoscape as cyto
 import dash_html_components as html
-import pandas as pd
 import networkx as nwx
+import pandas as pd
+from dash.dependencies import Input, Output
 
 app = dash.Dash(__name__)
 server = app.server
 
 # prepare data
-edges = pd.DataFrame.from_dict({'from': ['earthquake', 'earthquake', 'burglary', 'alarm', 'alarm'],
-                                'to': ['report', 'alarm', 'alarm', 'John Calls', 'Mary Calls']})
+edges = pd.DataFrame.from_dict(
+    {
+        "from": ["earthquake", "earthquake", "burglary", "alarm", "alarm"],
+        "to": ["report", "alarm", "alarm", "John Calls", "Mary Calls"],
+    }
+)
 visited_nodes = set()
 
 # Important_elements!!!
@@ -19,7 +23,7 @@ cy_edges = []
 cy_nodes = []
 
 for index, row in edges.iterrows():
-    source, target = row['from'], row['to']
+    source, target = row["from"], row["to"]
 
     if source not in visited_nodes:
         visited_nodes.add(source)
@@ -28,53 +32,38 @@ for index, row in edges.iterrows():
         visited_nodes.add(target)
         cy_nodes.append({"data": {"id": target, "label": target}})
 
-    cy_edges.append({
-        'data': {
-            'source': source,
-            'target': target
-        }
-    })
+    cy_edges.append({"data": {"source": source, "target": target}})
 
 stylesheet = [
-    {
-        "selector": 'node',
-        'style': {"label": "data(label)"}
-    },
-    {
-        "selector": 'edge',
-        "style": {
-            "target-arrow-shape": "triangle",
-            'curve-style': 'bezier'
-        }
-    }]
+    {"selector": "node", "style": {"label": "data(label)"}},
+    {"selector": "edge", "style": {"target-arrow-shape": "triangle", "curve-style": "bezier"}},
+]
 
 # define layout
-layout = html.Div([
-    dcc.Dropdown(
-        id='dropdown-layout', value='grid'
-    ),
-    html.Div(children=[
-        cyto.Cytoscape(
-            id='cytoscape',
-            elements=cy_edges + cy_nodes,
-            style={
-                'height': '95vh',
-                'width': '100%'
-            },
-            stylesheet=stylesheet
-        )
-    ])
-])
+layout = html.Div(
+    [
+        dcc.Dropdown(id="dropdown-layout", value="grid"),
+        html.Div(
+            children=[
+                cyto.Cytoscape(
+                    id="cytoscape",
+                    elements=cy_edges + cy_nodes,
+                    style={"height": "95vh", "width": "100%"},
+                    stylesheet=stylesheet,
+                )
+            ]
+        ),
+    ]
+)
 
-@app.callback(Output('cytoscape', 'layout'),
-              [Input('dropdown-layout', 'value')])
+
+@app.callback(Output("cytoscape", "layout"), [Input("dropdown-layout", "value")])
 def update_cytoscape_layout(layout):
-    return {'name': layout}
+    return {"name": layout}
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run_server(debug=False)
-
 
 # import matplotlib.pyplot as plt
 # from PyQt5 import QtCore

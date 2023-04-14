@@ -1,5 +1,4 @@
 class AhoKorasicNode(object):
-
     def __init__(self, current_string, input_abc, input_prefixes):
         self.value = current_string
         self.abc = input_abc

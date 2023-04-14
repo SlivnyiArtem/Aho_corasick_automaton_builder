@@ -1,5 +1,5 @@
-import networkx as nwx
 import matplotlib.pyplot as plt
+import networkx as nwx
 
 
 def form_graph(edge_dictionary):
