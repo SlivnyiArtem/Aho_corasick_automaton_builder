@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 import matplotlib.pyplot as plt
 from PyQt5 import QtCore
 from PyQt5 import QtGui
@@ -9,6 +11,13 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import Aho_Korasic_Node
 import graph_constructor
 import service_funcs
+
+
+def create_node_dict(labels):
+    node_dict = defaultdict(list)
+    for start, end in labels.keys():
+        node_dict[start].append(end)
+    return node_dict
 
 
 class AhoKorasicProcessWindow(QWidget):
@@ -68,7 +77,7 @@ class AhoKorasicProcessWindow(QWidget):
             else:
                 visualize_dict[(node.value, "NullNode")] = "\u03bb"
         graph = graph_constructor.form_graph(visualize_dict)
-        return graph, visualize_dict, prefixes, node_dict, abc
+        return graph, visualize_dict, prefixes, node_dict, abc, create_node_dict(visualize_dict)
 
     def restart(self):
         text, ok_pressed = QInputDialog.getText(self, "Ввести словарь", "Словарь:", QLineEdit.Normal, "")

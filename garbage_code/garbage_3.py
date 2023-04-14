@@ -1,10 +1,11 @@
 import pandas as pd
 
+from collections import defaultdict
+
 import dash
 from dash.dependencies import Input, Output
 import dash_core_components as dcc
 import dash_html_components as html
-
 import dash_cytoscape as cyto
 
 from process import AhoKorasicProcessWindow
@@ -15,51 +16,52 @@ server = app.server
 edges = pd.DataFrame.from_dict({'from': ['earthquake', 'earthquake', 'burglary', 'alarm', 'alarm'],
                                 'to': ['report', 'alarm', 'alarm', 'John Calls', 'Mary Calls']})
 
-_, labels, _, _, _ = AhoKorasicProcessWindow.calculate("акк акаунт")
+_, _, _, _, _, node_dict = AhoKorasicProcessWindow.calculate("акк акаунт")
 
-print(labels)
-node_dict = {}
-for start, end in labels.keys():
-    node_dict[start] = end
-    print(node_dict)
-    # source.append(start)
-    # target.append(end)
+# print(labels)
+# node_dict = defaultdict(list)
+# for start, end in labels.keys():
+#     node_dict[start].append(end)
 
 visited_nodes = set()
 
 cy_edges = []
 cy_nodes = []
-
-# for index, row in edges.iterrows():
-# source, target = row['from'], row['to']
+print(node_dict)
 for source in node_dict.keys():
-    target = node_dict[source]
-    print(type(source))
-    if source not in visited_nodes:
-        visited_nodes.add(source)
-        cy_nodes.append({"data": {"id": source, "label": source}})
-    if target not in visited_nodes:
-        visited_nodes.add(target)
-        cy_nodes.append({"data": {"id": target, "label": target}})
+    node_targets = node_dict[source]
+    for target in node_targets:
+        if source not in visited_nodes:
+            visited_nodes.add(source)
+            cy_nodes.append({"data": {"id": source, "label": source}})
+        if target not in visited_nodes:
+            visited_nodes.add(target)
+            cy_nodes.append({"data": {"id": target, "label": target}})
 
-    cy_edges.append({
-        'data': {
-            'source': source,
-            'target': target
-        }
-    })
+        cy_edges.append({
+            'data': {
+                'source': source,
+                'target': target
+            }
+        })
 
 # define stylesheet
 stylesheet = [
     {
-        "selector": 'node',
-        'style': {"label": "data(label)", }
+        "selector": 'node',  # For all nodes
+        'style': {
+            "opacity": 0.9,
+            "label": "data(label)",
+            "background-color": "#07ABA0",
+        }
     },
     {
-        "selector": 'edge',
+        "selector": 'edge',  # For all edges
         "style": {
+            "target-arrow-color": "#C5D3E2",
             "target-arrow-shape": "triangle",
-            'curve-style': 'bezier'
+            "line-color": "#C5D3E2",
+            'curve-style': 'bezier',
         }
     }]
 
