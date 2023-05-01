@@ -9,12 +9,12 @@ from dash.dependencies import Input, Output
 from process import AhoKorasicProcessWindow
 
 
-def generate_table(visualize_dict):
+def generate_table(table_dict):
     df = pd.DataFrame()
-    print(visualize_dict)
-    for item in visualize_dict.keys():
+    print(table_dict)
+    for item in table_dict.keys():
         prefix, value = item
-        df.loc[prefix, visualize_dict[item]] = value
+        df.loc[prefix, table_dict[item]] = value
     print(df)
 
     table = dbc.Table.from_dataframe(df, index=True)
@@ -72,7 +72,9 @@ stylesheet = [
 ]
 
 app.layout = html.Div(
-    [
+    children=[
+        dbc.Button("display graph", id="button-display-1"),
+        dbc.Button("display table", id="button-display-2"),
         dcc.Dropdown(
             id="dropdown-layout",
             options=[
@@ -88,14 +90,22 @@ app.layout = html.Div(
         html.Div(
             children=[
                 cyto.Cytoscape(
-                    id="cytoscape",
-                    elements=cy_edges + cy_nodes,
+                    id="graph",
+                    # elements=cy_edges + cy_nodes,
                     style={"height": "75vh", "width": "100%"},
                     stylesheet=stylesheet,
                 )
             ]
         ),
-        html.Div(children=[generate_table(visualize_dict)]),
+        html.Div(
+            children=[
+                dbc.Container(
+                    # children=generate_table(visualize_dict),
+                    id="table",
+                    # elements=generate_table(visualize_dict),
+                )
+            ]
+        ),
     ]
 )
 
@@ -103,6 +113,22 @@ app.layout = html.Div(
 @app.callback(Output("cytoscape", "layout"), [Input("dropdown-layout", "value")])
 def update_cytoscape_layout(layout):
     return {"name": layout}
+
+
+@app.callback(Output("graph", "elements"), Input("button-display-1", "n_clicks"))  # prevent_initial_call=True) ?????
+def hide_graph(n: int):
+    if n is not None and n % 2 == 1:
+        return []
+    else:
+        return cy_edges + cy_nodes
+
+
+@app.callback(Output("table", "children"), Input("button-display-2", "n_clicks"))  # prevent_initial_call=True) ?????
+def hide_table(n: int):
+    if n is not None and n % 2 == 1:
+        return []
+    else:
+        return generate_table(visualize_dict)
 
 
 if __name__ == "__main__":

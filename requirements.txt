@@ -5,3 +5,5 @@ matplotlib==3.6.2
 networkx==2.8.8
 pandas==1.5.3
 PyQt5==5.15.9
+
+requests~=2.29.0
