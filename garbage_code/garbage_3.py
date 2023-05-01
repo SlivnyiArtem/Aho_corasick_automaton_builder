@@ -1,3 +1,5 @@
+import random
+import re
 import dash
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
@@ -11,6 +13,39 @@ from process import AhoKorasicProcessWindow
 
 cur_df: DataFrame
 
+
+def get_random_lexem(lexem_length):
+    vowels = 'уеыаоэяию'
+    consonants = 'йцкнгшщзхфвпрлджчсмтб'
+    res = []
+    for i in range(lexem_length):
+        res.append(random.choice(consonants) if i % 2 == 0 else random.choice(vowels))
+    return "".join(res)
+
+
+def get_random_words(lexem_length: int, random_list_len: int):
+    common_lexem = get_random_lexem(lexem_length)
+    miss_cnt = 0
+    result = set()
+    with open('../singular.txt', 'r', encoding="utf-8") as f:
+        words = f.readlines()
+    words = [s.strip("\n") for s in words]
+    while True:
+        if len(result) == random_list_len:
+            break
+        random_word: str = random.choice(words)
+        if re.search(common_lexem, random_word) is not None:
+            result.add(random_word)
+        else:
+            miss_cnt += 1
+            if miss_cnt == 1000:
+                common_lexem = get_random_lexem(lexem_length)
+                miss_cnt = 0
+    return result
+
+
+r = get_random_words(3, 5)
+print()
 
 def copy_to_excel(path_to_excel: str):
     global cur_df
