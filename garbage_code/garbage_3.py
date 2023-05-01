@@ -5,19 +5,28 @@ import dash_cytoscape as cyto
 import dash_html_components as html
 import pandas as pd
 from dash.dependencies import Input, Output
+from pandas import DataFrame
 
 from process import AhoKorasicProcessWindow
 
+cur_df: DataFrame
+
+
+def copy_to_excel(path_to_excel: str):
+    global cur_df
+    cur_df.to_excel(path_to_excel)
+
 
 def generate_table(table_dict):
-    df = pd.DataFrame()
-    print(table_dict)
+    global cur_df
+    cur_df = pd.DataFrame()
+    # print(table_dict)
     for item in table_dict.keys():
         prefix, value = item
-        df.loc[prefix, table_dict[item]] = value
-    print(df)
+        cur_df.loc[prefix, table_dict[item]] = value
+    # print(df)
 
-    table = dbc.Table.from_dataframe(df, index=True)
+    table = dbc.Table.from_dataframe(cur_df, index=True)
     return table
 
 
