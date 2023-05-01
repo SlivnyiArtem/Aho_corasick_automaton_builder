@@ -57,7 +57,7 @@ for source in node_dict.keys():
             visited_nodes.add(target)
             cy_nodes.append({"data": {"id": target, "label": target}})
 
-        cy_edges.append({"data": {"source": source, "target": target}})
+        cy_edges.append({"data": {"source": source, "target": target, "label": visualize_dict[(source,target)]}})
 
 # define stylesheet
 stylesheet = [
@@ -75,6 +75,7 @@ stylesheet = [
             "target-arrow-color": "#C5D3E2",
             "target-arrow-shape": "triangle",
             "line-color": "#C5D3E2",
+            "label": "data(label)",
             "curve-style": "bezier",
         },
     },
