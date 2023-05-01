@@ -57,7 +57,7 @@ for source in node_dict.keys():
             visited_nodes.add(target)
             cy_nodes.append({"data": {"id": target, "label": target}})
 
-        cy_edges.append({"data": {"source": source, "target": target, "label": visualize_dict[(source,target)]}})
+        cy_edges.append({"data": {"source": source, "target": target, "label": visualize_dict[(source, target)]}})
 
 # define stylesheet
 stylesheet = [
@@ -101,7 +101,7 @@ app.layout = html.Div(
             children=[
                 cyto.Cytoscape(
                     id="graph",
-                    # elements=cy_edges + cy_nodes,
+                    elements=cy_edges + cy_nodes,
                     style={"height": "75vh", "width": "100%"},
                     stylesheet=stylesheet,
                 )
@@ -120,7 +120,7 @@ app.layout = html.Div(
 )
 
 
-@app.callback(Output("cytoscape", "layout"), [Input("dropdown-layout", "value")])
+@app.callback(Output("graph", "layout"), [Input("dropdown-layout", "value")])
 def update_cytoscape_layout(layout):
     return {"name": layout}
 
