@@ -31,7 +31,7 @@ server = app.server
 #     }
 # )
 
-_, visualize_dict, _, _, _, node_dict = AhoKorasicProcessWindow.calculate("акк акаунт")
+_, visualize_dict, _, _, _, node_dict = AhoKorasicProcessWindow.calculate("рама рамштайн")
 
 visited_nodes = set()
 
