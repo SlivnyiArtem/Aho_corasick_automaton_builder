@@ -6,7 +6,7 @@ import dash_core_components as dcc
 import dash_cytoscape as cyto
 import dash_html_components as html
 import pandas as pd
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 from pandas import DataFrame
 
 from process import AhoKorasicProcessWindow
@@ -118,6 +118,16 @@ stylesheet = [
 
 app.layout = html.Div(
     children=[
+        ##смотриздесь
+        html.Div(dcc.Input(id='input-on-submit', type='text')),
+        html.Button('Submit', id='submit-val', n_clicks=0),
+        html.Div(id='container-button-basic',
+                 children='Enter a value and press submit'),
+        html.Div(dcc.Input(id='input-on-submit-2', type='text')),
+        html.Button('Submit-2', id='submit-val-2', n_clicks=0),
+        html.Div(id='container-button-basic-2',
+                 children='Enter a value and press submit'),
+        ##
         dbc.Button("display graph", id="button-display-1"),
         dbc.Button("display table", id="button-display-2"),
         dcc.Dropdown(
@@ -153,7 +163,27 @@ app.layout = html.Div(
         ),
     ]
 )
+#Печатается тут
+@app.callback(
+    Output('container-button-basic', 'children'),
+    Input('submit-val', 'n_clicks'),
+    State('input-on-submit', 'value')
+)
+def update_output(n_clicks, value):
+    return 'The input value was "{}'.format(
+        value
+    )
 
+@app.callback(
+    Output('container-button-basic-2', 'children'),
+    Input('submit-val-2', 'n_clicks'),
+    State('input-on-submit-2', 'value')
+)
+def update_output_next(n_clicks, value):
+    return 'The input value was "{}'.format(
+        value
+    )
+###
 
 @app.callback(Output("graph", "layout"), [Input("dropdown-layout", "value")])
 def update_cytoscape_layout(layout):
