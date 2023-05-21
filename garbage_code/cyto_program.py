@@ -41,29 +41,21 @@ def make_layout():
 
     return html.Div(
         children=[
-            html.Div(dcc.Input(id='input_on_submit', type='text', value="text_inf")),
+
+            #
+            html.Div(dcc.Input(id='input-on-submit', type='text')),
             html.Button('Submit', id='submit-val', n_clicks=0),
             html.Div(id='container-button-basic',
                      children='Enter a value and press submit'),
-
-            dcc.Input(id='username', value='Initial Value', type='text'),
-            html.Button(id='submit-button', type='submit', children='Submit'),
-            html.Div(id='output_div'),
-
-            # #
-            # html.Div(dcc.Input(id='input_on_submit', type='text', value="text_inf")),
-            # html.Button('Submit', id='submit-val', n_clicks=0),
-            # html.Div(id='container-button-basic',
-            #          children='Enter a value and press submit'),
-            # html.Div(dcc.Input(id='input-on-submit-2', type='text')),
-            # html.Button('Submit-2', id='submit-val-2', n_clicks=0),
-            # html.Div(id='container-button-basic-2',
-            #          children='Enter a value and press submit'),
-            # #
+            html.Div(dcc.Input(id='input-on-submit-2', type='text')),
+            html.Button('Submit-2', id='submit-val-2', n_clicks=0),
+            html.Div(id='container-button-basic-2',
+                     children='Enter a value and press submit'),
             #
-            # dbc.Button("display graph", id="button-display-1"),
-            # dbc.Button("display table", id="button-display-2"),
-            # dbc.Button("display lambda", id="button-display-3"),
+
+            dbc.Button("display graph", id="button-display-1"),
+            dbc.Button("display table", id="button-display-2"),
+            dbc.Button("display lambda", id="button-display-3"),
             dcc.Dropdown(
                 id="dropdown-layout",
                 options=[
@@ -122,20 +114,41 @@ def make_layout():
 
 app.layout = make_layout()
 
+#Печатается тут
+@app.callback(
+    Output('container-button-basic', 'children'),
+    Input('submit-val', 'n_clicks'),
+    State('input-on-submit', 'value')
+)
+def update_output(n_clicks, value):
+    return 'The input value was "{}'.format(
+        value
+    )
 
-@app.callback(Output('output_div', 'children'),
-                  [Input('submit-button', 'n_clicks')],
-                  [State('username', 'value')],
-                  )
-def update_output(clicks, input_value):
-    # if clicks is not None:
-    print(clicks, input_value)
+@app.callback(
+    Output('container-button-basic-2', 'children'),
+    Input('submit-val-2', 'n_clicks'),
+    State('input-on-submit-2', 'value')
+)
+def update_output_next(n_clicks, value):
+    return 'The input value was "{}'.format(
+        value
+    )
+###
 
-
-@app.callback([Input("input_on_submit", "value")])
-def update_cytoscape_sdf(layout):
-    print("value")
-    return {"name": layout}
+# @app.callback(Output('output_div', 'children'),
+#                   [Input('submit-button', 'n_clicks')],
+#                   [State('username', 'value')],
+#                   )
+# def update_output(clicks, input_value):
+#     # if clicks is not None:
+#     print(clicks, input_value)
+#
+#
+# @app.callback([Input("input_on_submit", "value")])
+# def update_cytoscape_sdf(layout):
+#     print("value")
+#     return {"name": layout}
 
 
 @app.callback(Output("graph", "layout"), [Input("dropdown-layout", "value")])
