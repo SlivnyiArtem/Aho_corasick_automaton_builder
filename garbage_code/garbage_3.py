@@ -9,7 +9,7 @@ import pandas as pd
 from dash.dependencies import Input, Output
 from pandas import DataFrame
 
-from process import AhoKorasicProcessWindow
+from garbage_code.data_service import calculate
 
 cur_df: DataFrame
 
@@ -75,7 +75,7 @@ server = app.server
 #     }
 # )
 
-_, visualize_dict, _, _, _, node_dict = AhoKorasicProcessWindow.calculate("рама рамштайн")
+_, visualize_dict, _, _, _, node_dict = calculate("рама рамштайн")
 
 visited_nodes = set()
 

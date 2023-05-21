@@ -1,6 +1,6 @@
 import dash_bootstrap_components as dbc
 import dash_cytoscape as cyto
-from dash import Input, Output, dash, dcc, html
+from dash import Input, Output, dash, dcc, html, State
 
 from garbage_code.cyto_data import Singletone
 from garbage_code.data_service import generate_graph, generate_table, get_random_words
@@ -33,12 +33,37 @@ def make_style():
         },
     ]
 
+
 def make_layout():
+    # app.layout = html.Div([
+    #
+    # ])
+
     return html.Div(
         children=[
-            dbc.Button("display graph", id="button-display-1"),
-            dbc.Button("display table", id="button-display-2"),
-            dbc.Button("display lambda", id="button-display-3"),
+            html.Div(dcc.Input(id='input_on_submit', type='text', value="text_inf")),
+            html.Button('Submit', id='submit-val', n_clicks=0),
+            html.Div(id='container-button-basic',
+                     children='Enter a value and press submit'),
+
+            dcc.Input(id='username', value='Initial Value', type='text'),
+            html.Button(id='submit-button', type='submit', children='Submit'),
+            html.Div(id='output_div'),
+
+            # #
+            # html.Div(dcc.Input(id='input_on_submit', type='text', value="text_inf")),
+            # html.Button('Submit', id='submit-val', n_clicks=0),
+            # html.Div(id='container-button-basic',
+            #          children='Enter a value and press submit'),
+            # html.Div(dcc.Input(id='input-on-submit-2', type='text')),
+            # html.Button('Submit-2', id='submit-val-2', n_clicks=0),
+            # html.Div(id='container-button-basic-2',
+            #          children='Enter a value and press submit'),
+            # #
+            #
+            # dbc.Button("display graph", id="button-display-1"),
+            # dbc.Button("display table", id="button-display-2"),
+            # dbc.Button("display lambda", id="button-display-3"),
             dcc.Dropdown(
                 id="dropdown-layout",
                 options=[
@@ -63,7 +88,7 @@ def make_layout():
             ),
             html.Div(
                 children=[
-                    dbc.Container(id="table",)
+                    dbc.Container(id="table", )
                 ]
             ),
         ]
@@ -96,6 +121,21 @@ def make_layout():
 # ]
 
 app.layout = make_layout()
+
+
+@app.callback(Output('output_div', 'children'),
+                  [Input('submit-button', 'n_clicks')],
+                  [State('username', 'value')],
+                  )
+def update_output(clicks, input_value):
+    # if clicks is not None:
+    print(clicks, input_value)
+
+
+@app.callback([Input("input_on_submit", "value")])
+def update_cytoscape_sdf(layout):
+    print("value")
+    return {"name": layout}
 
 
 @app.callback(Output("graph", "layout"), [Input("dropdown-layout", "value")])
