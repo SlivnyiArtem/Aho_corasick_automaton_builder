@@ -48,8 +48,8 @@ def generate_table(table_dict):
     return table, cur_df
 
 
-def generate_graph(S: Singletone):
-    _, visualize_dict, _, _, _, node_dict = calculate("рама мара")
+def generate_graph(S: Singletone, input_str: str):
+    _, visualize_dict, _, _, _, node_dict = calculate(input_str)
 
     visited_nodes = set()
 

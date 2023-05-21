@@ -8,7 +8,7 @@ from garbage_code.data_service import generate_graph, generate_table, get_random
 app = dash.Dash(__name__)
 server = app.server
 Data = Singletone()
-generate_graph(Data)
+generate_graph(Data, "кораvf")
 
 
 def make_style():
@@ -35,9 +35,6 @@ def make_style():
 
 
 def make_layout():
-    # app.layout = html.Div([
-    #
-    # ])
 
     return html.Div(
         children=[
@@ -86,41 +83,16 @@ def make_layout():
         ]
     )
 
-
-# stylesheet = [
-#     {
-#         "selector": "node",
-#         "style": {
-#             "opacity": 0.9,
-#             "label": "data(label)",
-#             "background-color": "#07ABA0",
-#         },
-#     },
-#     {
-#         "selector": "edge",
-#         "style": {
-#             "target-arrow-color": "#C5D3E2",
-#             "target-arrow-shape": "triangle",
-#             "line-color": "#C5D3E2",
-#             "label": "data(label)",
-#             "curve-style": "bezier",
-#         },
-#     },
-# ]
-#
-# stylesheet = [
-#
-# ]
-
 app.layout = make_layout()
 
-#Печатается тут
 @app.callback(
     Output('container-button-basic', 'children'),
+    # Output("graph", "elements"),
     Input('submit-val', 'n_clicks'),
     State('input-on-submit', 'value')
 )
 def update_output(n_clicks, value):
+    generate_graph(Data, value)
     return 'The input value was "{}'.format(
         value
     )
@@ -134,21 +106,6 @@ def update_output_next(n_clicks, value):
     return 'The input value was "{}'.format(
         value
     )
-###
-
-# @app.callback(Output('output_div', 'children'),
-#                   [Input('submit-button', 'n_clicks')],
-#                   [State('username', 'value')],
-#                   )
-# def update_output(clicks, input_value):
-#     # if clicks is not None:
-#     print(clicks, input_value)
-#
-#
-# @app.callback([Input("input_on_submit", "value")])
-# def update_cytoscape_sdf(layout):
-#     print("value")
-#     return {"name": layout}
 
 
 @app.callback(Output("graph", "layout"), [Input("dropdown-layout", "value")])
