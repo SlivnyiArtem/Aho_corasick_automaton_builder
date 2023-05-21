@@ -1,4 +1,4 @@
-class Singletone():
+class Singletone:
     def __init__(self):
         self.V = None
         self.node_dict = None

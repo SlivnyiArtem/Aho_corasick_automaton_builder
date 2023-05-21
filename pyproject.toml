@@ -3,9 +3,9 @@ line-length = 120
 exclude = 'venv'
 
 [tool.isort]
-combine_as_imports = true
+# combine_as_imports = true
 include_trailing_comma = true
-known_first_party = 'DTIS'
+# known_first_party = 'DTIS'
 line_length = 120
 profile = 'black'
-skip = ["venv"]
+skip = ["venv", "dash_app", "build", "dist"]

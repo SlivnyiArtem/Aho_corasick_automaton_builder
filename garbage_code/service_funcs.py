@@ -8,6 +8,13 @@ def get_abc_from_str(input_str):
     return sorted(abc)
 
 
+def check_all_postfix(new_word, input_prefixes):
+    for i in range(0, len(new_word)):
+        if new_word[i:] in input_prefixes:
+            return new_word[i:]
+    return None
+
+
 def get_words_from_str(input_str):
     return input_str.split()
 
