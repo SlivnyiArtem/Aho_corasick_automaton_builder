@@ -47,6 +47,7 @@ def get_random_words(lexem_length: int, random_list_len: int):
 r = get_random_words(3, 5)
 print()
 
+
 def copy_to_excel(path_to_excel: str):
     global cur_df
     cur_df.to_excel(path_to_excel)
@@ -120,16 +121,24 @@ app.layout = html.Div(
     children=[
         ##смотриздесь
         html.Div(dcc.Input(id='input-on-submit', type='text')),
-        html.Button('Submit', id='submit-val', n_clicks=0),
-        html.Div(id='container-button-basic',
-                 children='Enter a value and press submit'),
-        html.Div(dcc.Input(id='input-on-submit-2', type='text')),
-        html.Button('Submit-2', id='submit-val-2', n_clicks=0),
-        html.Div(id='container-button-basic-2',
-                 children='Enter a value and press submit'),
+        html.Button('Generate', id='submit-val', n_clicks=0),
         ##
-        dbc.Button("display graph", id="button-display-1"),
-        dbc.Button("display table", id="button-display-2"),
+        dcc.Dropdown(
+            id='display_graph',
+            options=[
+                {'label': 'Show graph', 'value': 'on'},
+                {'label': 'Hide graph', 'value': 'off'}
+            ],
+            value='on'
+        ),
+        dcc.Dropdown(
+            id='display_table',
+            options=[
+                {'label': 'Show table', 'value': 'on'},
+                {'label': 'Hide table', 'value': 'off'}
+            ],
+            value='on'
+        ),
         dcc.Dropdown(
             id="dropdown-layout",
             options=[
@@ -143,6 +152,7 @@ app.layout = html.Div(
             value="grid",
         ),
         html.Div(
+            id="wrapper_graph",
             children=[
                 cyto.Cytoscape(
                     id="graph",
@@ -150,29 +160,54 @@ app.layout = html.Div(
                     style={"height": "75vh", "width": "100%"},
                     stylesheet=stylesheet,
                 )
-            ]
+            ],
+            style= {'display': 'block'}
         ),
         html.Div(
+            id="wrapper_table",
             children=[
                 dbc.Container(
                     # children=generate_table(visualize_dict),
                     id="table",
-                    # elements=generate_table(visualize_dict),
+                    children=generate_table(visualize_dict)
                 )
-            ]
+            ],
+            style= {'display': 'block'}
         ),
     ]
 )
-#Печатается тут
+
+
+# Печатается тут
 @app.callback(
-    Output('container-button-basic', 'children'),
+    Output("graph", "elements"),
+    Output("table", "children"),
     Input('submit-val', 'n_clicks'),
     State('input-on-submit', 'value')
 )
-def update_output(n_clicks, value):
-    return 'The input value was "{}'.format(
-        value
-    )
+def update_output(n, value):
+    _, visualize_dict, _, _, _, node_dict = AhoKorasicProcessWindow.calculate(value)
+
+    visited_nodes = set()
+
+    cy_edges = []
+    cy_nodes = []
+
+    for source in node_dict.keys():
+        node_targets = node_dict[source]
+        for target in node_targets:
+            if source not in visited_nodes:
+                visited_nodes.add(source)
+                cy_nodes.append({"data": {"id": source, "label": source}})
+            if target not in visited_nodes:
+                visited_nodes.add(target)
+                cy_nodes.append({"data": {"id": target, "label": target}})
+
+            cy_edges.append(
+                {"data": {"source": source, "target": target, "label": visualize_dict[(source, target)]}})
+    print(cy_edges)
+    return cy_edges + cy_nodes, generate_table(visualize_dict)
+
 
 @app.callback(
     Output('container-button-basic-2', 'children'),
@@ -183,6 +218,8 @@ def update_output_next(n_clicks, value):
     return 'The input value was "{}'.format(
         value
     )
+
+
 ###
 
 @app.callback(Output("graph", "layout"), [Input("dropdown-layout", "value")])
@@ -190,20 +227,40 @@ def update_cytoscape_layout(layout):
     return {"name": layout}
 
 
-@app.callback(Output("graph", "elements"), Input("button-display-1", "n_clicks"))  # prevent_initial_call=True) ?????
-def hide_graph(n: int):
-    if n is not None and n % 2 == 1:
-        return []
-    else:
-        return cy_edges + cy_nodes
+#@app.callback(Output("graph", "elements"), Input("button-display-1", "n_clicks"))  # prevent_initial_call=True) ?????
+#def hide_graph(n: int):
+#    if n is not None and n % 2 == 1:
+#        return []
+#    else:
+#        return cy_edges + cy_nodes
+
+@app.callback(
+   Output(component_id='wrapper_graph', component_property='style'),
+   [Input(component_id='display_graph', component_property='value')])
+
+def show_hide_element(visibility_state):
+    if visibility_state == 'on':
+        return {'display': 'block'}
+    if visibility_state == 'off':
+        return {'display': 'none'}
+
+@app.callback(
+   Output(component_id='wrapper_table', component_property='style'),
+   [Input(component_id='display_table', component_property='value')])
+
+def show_hide_element_1(visibility_state):
+    if visibility_state == 'on':
+        return {'display': 'block'}
+    if visibility_state == 'off':
+        return {'display': 'none'}
 
 
-@app.callback(Output("table", "children"), Input("button-display-2", "n_clicks"))  # prevent_initial_call=True) ?????
-def hide_table(n: int):
-    if n is not None and n % 2 == 1:
-        return []
-    else:
-        return generate_table(visualize_dict)
+#@app.callback(Output("table", "children"), Input("button-display-2", "n_clicks"))  # prevent_initial_call=True) ?????
+#def hide_table(n: int):
+#    if n is not None and n % 2 == 1:
+#        return []
+#    else:
+#        return generate_table(visualize_dict)
 
 
 if __name__ == "__main__":
