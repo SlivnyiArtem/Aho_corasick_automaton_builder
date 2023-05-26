@@ -1,0 +1,166 @@
+import dash
+import dash_bootstrap_components as dbc
+import dash_cytoscape as cyto
+from dash import dcc
+from dash import html
+from dash.dependencies import Input, Output, State
+
+from app.generators import generate_random_words
+from app.generators import generate_table
+from app.processor import calculate
+
+app = dash.Dash(__name__)
+server = app.server
+
+stylesheet = [
+    {
+        "selector": "node",  # For all nodes
+        "style": {
+            "opacity": 0.9,
+            "label": "data(label)",
+            "background-color": "#07ABA0",
+        },
+    },
+    {
+        "selector": "edge",  # For all edges
+        "style": {
+            "target-arrow-color": "#C5D3E2",
+            "target-arrow-shape": "triangle",
+            "line-color": "#C5D3E2",
+            "label": "data(label)",
+            "curve-style": "bezier",
+        },
+    },
+]
+
+app.layout = html.Div(
+    children=[
+        html.Div(dcc.Input(id='input-on-submit', type='text')),
+        html.Button('Generate', id='submit-val', n_clicks=0),
+        ##
+        html.Div(dcc.Input(id='input-random-generator', type='value')),
+        html.Button('Generate_RND', id='submit-random-generator-input', n_clicks=0),
+        ##
+        dcc.Dropdown(
+            id='display_graph',
+            options=[
+                {'label': 'Show graph', 'value': 'on'},
+                {'label': 'Hide graph', 'value': 'off'}
+            ],
+            value='on'
+        ),
+        dcc.Dropdown(
+            id='display_table',
+            options=[
+                {'label': 'Show table', 'value': 'on'},
+                {'label': 'Hide table', 'value': 'off'}
+            ],
+            value='on'
+        ),
+        dcc.Dropdown(
+            id="dropdown-layout",
+            options=[
+                {"label": "random", "value": "random"},
+                {"label": "grid", "value": "grid"},
+                {"label": "circle", "value": "circle"},
+                {"label": "concentric", "value": "concentric"},
+                {"label": "breadthfirst", "value": "breadthfirst"},
+                {"label": "cose", "value": "cose"},
+            ],
+            value="grid",
+        ),
+        html.Div(
+            id="wrapper_graph",
+            children=[
+                cyto.Cytoscape(
+                    id="graph",
+                    elements=[] + [],
+                    style={"height": "75vh", "width": "100%"},
+                    stylesheet=stylesheet,
+                )
+            ],
+            style={'display': 'block'}
+        ),
+        html.Div(
+            id="wrapper_table",
+            children=[
+                dbc.Container(
+                    id="table",
+                    children=generate_table({})
+                )
+            ],
+            style={'display': 'block'}
+        ),
+    ]
+)
+
+
+@app.callback(
+    Output("graph", "elements", allow_duplicate=True),
+    Output("table", "children", allow_duplicate=True),
+
+    Input('submit-val', 'n_clicks'),
+    Input('submit-random-generator-input', 'n_clicks'),
+    State('input-on-submit', 'value'),
+    State('input-random-generator', 'value'),
+    prevent_initial_call=True,
+)
+def update_output(n_clicks_1, n_clicks_2, value, rnd_cnt):
+    triggered_id = dash.ctx.triggered_id
+    if triggered_id == 'submit-random-generator-input':
+        value = " ".join(generate_random_words(3, int(rnd_cnt)))
+    _, visualize_dict, _, _, _, node_dict = calculate(value)
+    visited_nodes = set()
+    cy_edges = []
+    cy_nodes = []
+
+    for source in node_dict.keys():
+        node_targets = node_dict[source]
+        for target in node_targets:
+            if source not in visited_nodes:
+                visited_nodes.add(source)
+                cy_nodes.append({"data": {"id": source, "label": source}})
+            if target not in visited_nodes:
+                visited_nodes.add(target)
+                cy_nodes.append({"data": {"id": target, "label": target}})
+            cy_edges.append(
+                {"data": {"source": source, "target": target, "label": visualize_dict[(source, target)]}})
+    return cy_edges + cy_nodes, generate_table(visualize_dict)
+
+
+@app.callback(
+    Output('container-button-basic-2', 'children'),
+    Input('submit-val-2', 'n_clicks'),
+    State('input-on-submit-2', 'value')
+)
+def update_output_next(n_clicks, value):
+    return 'The input value was "{}'.format(value)
+
+
+@app.callback(Output("graph", "layout"), [Input("dropdown-layout", "value")])
+def update_cytoscape_layout(layout):
+    return {"name": layout}
+
+
+@app.callback(
+    Output(component_id='wrapper_graph', component_property='style'),
+    [Input(component_id='display_graph', component_property='value')])
+def show_hide_element(visibility_state):
+    if visibility_state == 'on':
+        return {'display': 'block'}
+    if visibility_state == 'off':
+        return {'display': 'none'}
+
+
+@app.callback(
+    Output(component_id='wrapper_table', component_property='style'),
+    [Input(component_id='display_table', component_property='value')])
+def show_hide_element_1(visibility_state):
+    if visibility_state == 'on':
+        return {'display': 'block'}
+    if visibility_state == 'off':
+        return {'display': 'none'}
+
+
+if __name__ == "__main__":
+    app.run_server(debug=False)
