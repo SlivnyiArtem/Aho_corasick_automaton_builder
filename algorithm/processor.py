@@ -1,4 +1,4 @@
-from app import Aho_Korasic_Node, graph_constructor, service_funcs
+from algorithm import Aho_Korasic_Node, graph_constructor, service_funcs
 
 
 def calculate(input_data: str):

@@ -5,12 +5,51 @@ from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output, State
 
-from app.generators import generate_random_words
-from app.generators import generate_table
-from app.processor import calculate
+from algorithm.generators import generate_random_words
+from algorithm.generators import generate_table
+from algorithm.processor import calculate
 
 app = dash.Dash(__name__)
 server = app.server
+
+
+style = {
+    'display': 'flex',
+    'flex-direction': 'row',
+    'justify-content': 'space-around',
+    'align-items': 'center',
+    'border': '1px solid black',
+    'padding': '10px',
+}
+
+input_style = {
+    'margin': '10px',
+    'width': '100%',
+    'height': '50px',
+}
+
+button_style = {
+    'margin': '10px',
+    'width': '100%',
+    'height': '50px',
+     #'background-color': 'blue',
+    'color': 'white',
+}
+
+graph_style = {
+    'display': 'block',
+    'margin': '10px',
+    'width': '50%',
+}
+
+table_style = {
+    'display': 'block',
+    'margin': '10px',
+    'width': '50%',
+}
+
+
+
 
 stylesheet = [
     {
@@ -35,11 +74,11 @@ stylesheet = [
 
 app.layout = html.Div(
     children=[
-        html.Div(dcc.Input(id='input-on-submit', type='text')),
-        html.Button('Generate', id='submit-val', n_clicks=0),
+        html.Div(dcc.Input(id='input-on-submit', type='text', style=input_style)),
+        html.Button('Generate', id='submit-val', n_clicks=0, style=button_style),
         ##
-        html.Div(dcc.Input(id='input-random-generator', type='value')),
-        html.Button('Generate_RND', id='submit-random-generator-input', n_clicks=0),
+        html.Div(dcc.Input(id='input-random-generator', type='value', style=input_style)),
+        html.Button('Generate_RND', id='submit-random-generator-input', n_clicks=0, style=button_style),
         ##
         dcc.Dropdown(
             id='display_graph',
@@ -79,6 +118,7 @@ app.layout = html.Div(
                     stylesheet=stylesheet,
                 )
             ],
+            # style=graph_style,
             style={'display': 'block'}
         ),
         html.Div(
@@ -89,9 +129,22 @@ app.layout = html.Div(
                     children=generate_table({})
                 )
             ],
-            style={'display': 'block'}
+            # style=table_style
+            style={'display': 'block',
+                "margin-left": "150px",}
         ),
-    ]
+    ],
+    # style={'display': 'flex', 'flex-direction': 'row', 'justify-content': 'center'}
+    # style={
+    #     # "width": "190px",
+    #     # "height": "40px",
+    #     "margin-left": "85px",
+    #     "margin-top": "100px",
+    #     "margin-right": "85px",
+    #     # "display": "inline-block",
+    #     "verticalAlign": "middle",
+    #     "font-family": "Helvetica",
+    # },
 )
 
 
