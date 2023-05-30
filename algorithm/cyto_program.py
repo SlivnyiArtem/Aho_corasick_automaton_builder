@@ -5,13 +5,12 @@ from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output, State
 
-from algorithm.generators import generate_random_words
+from algorithm.generators import generate_random_words, generate_lambda_table
 from algorithm.generators import generate_table
 from algorithm.processor import calculate
 
 app = dash.Dash(__name__)
 server = app.server
-
 
 style = {
     'display': 'flex',
@@ -32,7 +31,7 @@ button_style = {
     'margin': '10px',
     'width': '100%',
     'height': '50px',
-     #'background-color': 'blue',
+    # 'background-color': 'blue',
     'color': 'white',
 }
 
@@ -47,9 +46,6 @@ table_style = {
     'margin': '10px',
     'width': '50%',
 }
-
-
-
 
 stylesheet = [
     {
@@ -97,6 +93,14 @@ app.layout = html.Div(
             value='on'
         ),
         dcc.Dropdown(
+            id='display_lambda_table',
+            options=[
+                {'label': 'Show table', 'value': 'on'},
+                {'label': 'Hide table', 'value': 'off'}
+            ],
+            value='on'
+        ),
+        dcc.Dropdown(
             id="dropdown-layout",
             options=[
                 {"label": "random", "value": "random"},
@@ -131,7 +135,20 @@ app.layout = html.Div(
             ],
             # style=table_style
             style={'display': 'block',
-                "margin-left": "150px",}
+                   "margin-left": "150px", }
+        ),
+        html.Div(
+            id="wrapper_lambda_table",
+            children=[
+                dbc.Container(
+                    id="lambda_table",
+                    children=generate_lambda_table({})
+                )
+            ],
+            # style=table_style
+            style={'display': 'block',
+                   # "margin-left": "150px",
+                   }
         ),
     ],
     # style={'display': 'flex', 'flex-direction': 'row', 'justify-content': 'center'}
@@ -151,6 +168,7 @@ app.layout = html.Div(
 @app.callback(
     Output("graph", "elements", allow_duplicate=True),
     Output("table", "children", allow_duplicate=True),
+    Output("lambda_table", "children", allow_duplicate=True),
 
     Input('submit-val', 'n_clicks'),
     Input('submit-random-generator-input', 'n_clicks'),
@@ -162,7 +180,7 @@ def update_output(n_clicks_1, n_clicks_2, value, rnd_cnt):
     triggered_id = dash.ctx.triggered_id
     if triggered_id == 'submit-random-generator-input':
         value = " ".join(generate_random_words(3, int(rnd_cnt)))
-    _, visualize_dict, _, _, _, node_dict = calculate(value)
+    _, visualize_dict, _, nodes, _, node_dict = calculate(value)
     visited_nodes = set()
     cy_edges = []
     cy_nodes = []
@@ -178,7 +196,7 @@ def update_output(n_clicks_1, n_clicks_2, value, rnd_cnt):
                 cy_nodes.append({"data": {"id": target, "label": target}})
             cy_edges.append(
                 {"data": {"source": source, "target": target, "label": visualize_dict[(source, target)]}})
-    return cy_edges + cy_nodes, generate_table(visualize_dict)
+    return cy_edges + cy_nodes, generate_table(visualize_dict), generate_lambda_table(nodes)
 
 
 @app.callback(
@@ -209,6 +227,16 @@ def show_hide_element(visibility_state):
     Output(component_id='wrapper_table', component_property='style'),
     [Input(component_id='display_table', component_property='value')])
 def show_hide_element_1(visibility_state):
+    if visibility_state == 'on':
+        return {'display': 'block'}
+    if visibility_state == 'off':
+        return {'display': 'none'}
+
+
+@app.callback(
+    Output(component_id='wrapper_lambda_table', component_property='style'),
+    [Input(component_id='display_lambda_table', component_property='value')])
+def show_hide_element_2(visibility_state):
     if visibility_state == 'on':
         return {'display': 'block'}
     if visibility_state == 'off':
