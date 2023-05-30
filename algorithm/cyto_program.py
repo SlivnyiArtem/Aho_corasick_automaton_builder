@@ -28,11 +28,23 @@ input_style = {
 }
 
 button_style = {
-    'margin': '10px',
-    'width': '100%',
-    'height': '50px',
-    # 'background-color': 'blue',
-    'color': 'white',
+    "display": "inline-block",
+    "font-weight": "700",
+    "color": "white",
+    "text-decoration": "none",
+    "user-select": "none",
+    "padding": ".5em 2em",
+    "outline": "none",
+    "border": "2px solid",
+    "transition": "0.2s",
+    "border-radius": "1px",
+    "background": "rgb(33,147,90)",
+
+    # 'margin': '10px',
+    # 'width': '100%',
+    # 'height': '50px',
+    # # 'background-color': 'blue',
+    # 'color': 'white',
 }
 
 graph_style = {
@@ -95,8 +107,8 @@ app.layout = html.Div(
         dcc.Dropdown(
             id='display_lambda_table',
             options=[
-                {'label': 'Show table', 'value': 'on'},
-                {'label': 'Hide table', 'value': 'off'}
+                {'label': 'Show lambda table', 'value': 'on'},
+                {'label': 'Hide lambda table', 'value': 'off'}
             ],
             value='on'
         ),
