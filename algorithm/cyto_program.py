@@ -5,7 +5,7 @@ from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output, State
 
-from algorithm.generators import generate_random_words, generate_lambda_table
+from algorithm.generators import generate_random_words, generate_lambda_table, generate_df
 from algorithm.generators import generate_table
 from algorithm.processor import calculate
 
@@ -281,8 +281,8 @@ def show_hide_element_2(visibility_state):
 )
 def func_to_excel(n_clicks):
     global cur_dic
-    a = generate_df(cur_dic)
-    return dcc.send_data_frame(a.to_excel, "myTable.xlsx", sheet_name="Sheet_name_1")
+    df = generate_df(cur_dic)
+    return dcc.send_data_frame(df.to_excel, "myTable.xlsx", sheet_name="Sheet_name_1")
 
 
 if __name__ == "__main__":
