@@ -5,5 +5,6 @@ matplotlib==3.7.1
 networkx==3.1
 pandas==2.0.1
 PyQt5==5.15.9
+openpyxl
 
 requests~=2.29.0
