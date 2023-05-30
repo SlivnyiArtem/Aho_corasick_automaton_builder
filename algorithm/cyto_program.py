@@ -40,8 +40,8 @@ button_style = {
     "border-radius": "1px",
     "background": "rgb(33,147,90)",
 
-    # 'margin': '10px',
-    # 'width': '100%',
+    'margin': '10px',
+    'width': '100%',
     # 'height': '50px',
     # # 'background-color': 'blue',
     # 'color': 'white',
@@ -61,7 +61,7 @@ table_style = {
 
 stylesheet = [
     {
-        "selector": "node",  # For all nodes
+        "selector": "node",
         "style": {
             "opacity": 0.9,
             "label": "data(label)",
@@ -69,7 +69,7 @@ stylesheet = [
         },
     },
     {
-        "selector": "edge",  # For all edges
+        "selector": "edge",
         "style": {
             "target-arrow-color": "#C5D3E2",
             "target-arrow-shape": "triangle",
@@ -78,40 +78,52 @@ stylesheet = [
             "curve-style": "bezier",
         },
     },
+{
+        "selector": '[label *= "\u03bb"]',
+        'style': {
+            "color": "#B8860B",
+            "line-color": "#DC143C",
+            "target-arrow-color": "#DC143C",
+        }
+    },
 ]
 
 app.layout = html.Div(
     children=[
-        html.Div(dcc.Input(id='input-on-submit', type='text', style=input_style)),
-        html.Button('Generate', id='submit-val', n_clicks=0, style=button_style),
+        html.Div(dcc.Input(id='input-on-submit', type='text', style=input_style, placeholder="введите слова через пробел")),
+        html.Button('Сгенерировать автомат', id='submit-val', n_clicks=0, style=button_style),
         ##
-        html.Div(dcc.Input(id='input-random-generator', type='value', style=input_style)),
-        html.Button('Generate_RND', id='submit-random-generator-input', n_clicks=0, style=button_style),
+        html.Div(dcc.Input(id='input-random-generator', type='value', style=input_style,
+                           placeholder="Введите требуемое кол-во случайных слов")),
+        html.Button('Сгенерировать автомат из случайных слов',
+                    id='submit-random-generator-input', n_clicks=0, style=button_style),
+        # html.H2(id='words_output'),
         ##
         dcc.Dropdown(
             id='display_graph',
             options=[
-                {'label': 'Show graph', 'value': 'on'},
-                {'label': 'Hide graph', 'value': 'off'}
+                {'label': 'Отобразить граф', 'value': 'on'},
+                {'label': 'Скрыть граф', 'value': 'off'}
             ],
             value='on'
         ),
         dcc.Dropdown(
             id='display_table',
             options=[
-                {'label': 'Show table', 'value': 'on'},
-                {'label': 'Hide table', 'value': 'off'}
+                {'label': 'Отобразить таблицу переходов', 'value': 'on'},
+                {'label': 'Скрыть таблицу переходов', 'value': 'off'}
             ],
             value='on'
         ),
         dcc.Dropdown(
             id='display_lambda_table',
             options=[
-                {'label': 'Show lambda table', 'value': 'on'},
-                {'label': 'Hide lambda table', 'value': 'off'}
+                {'label': 'Отобразить суффиксные ссылки', 'value': 'on'},
+                {'label': 'Скрыть суффиксные ссылки', 'value': 'off'}
             ],
             value='on'
         ),
+        html.Div([html.H2(children="Выбор укладки")]),
         dcc.Dropdown(
             id="dropdown-layout",
             options=[
@@ -128,6 +140,8 @@ app.layout = html.Div(
             id="wrapper_graph",
             children=[
                 cyto.Cytoscape(
+                    minZoom=0.1,
+                    maxZoom=50,
                     id="graph",
                     elements=[] + [],
                     style={"height": "75vh", "width": "100%"},
@@ -181,6 +195,7 @@ app.layout = html.Div(
     Output("graph", "elements", allow_duplicate=True),
     Output("table", "children", allow_duplicate=True),
     Output("lambda_table", "children", allow_duplicate=True),
+    # Output("words_output", "children", allow_duplicate=True),
 
     Input('submit-val', 'n_clicks'),
     Input('submit-random-generator-input', 'n_clicks'),
@@ -208,7 +223,7 @@ def update_output(n_clicks_1, n_clicks_2, value, rnd_cnt):
                 cy_nodes.append({"data": {"id": target, "label": target}})
             cy_edges.append(
                 {"data": {"source": source, "target": target, "label": visualize_dict[(source, target)]}})
-    return cy_edges + cy_nodes, generate_table(visualize_dict), generate_lambda_table(nodes)
+    return cy_edges + cy_nodes, generate_table(visualize_dict), generate_lambda_table(nodes), # value
 
 
 @app.callback(

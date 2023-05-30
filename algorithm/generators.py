@@ -10,7 +10,7 @@ def generate_lambda_table(nodes: dict):
     data = list(map(lambda node:
                     (node.value, node.suffix_link if node.suffix_link is not None else "None"), nodes.values()))
     df = pd.DataFrame(data, columns=["prefix", "suffix_link"])
-    table = Table.from_dataframe(df, index=True, striped=True, bordered=True, hover=True)
+    # table = Table.from_dataframe(df, index=True, striped=True, bordered=True, hover=True)
     table = dash_table.DataTable(data=df.to_dict('records'), style_cell={'textAlign': 'left'},)
     return table
 
@@ -20,11 +20,7 @@ def generate_table(table_dict):
     for item in table_dict.keys():
         prefix, value = item
         cur_df.loc[prefix, table_dict[item]] = value
-
     table = Table.from_dataframe(cur_df, index=True, striped=True, bordered=True, hover=True)
-    #
-    # table = dash_table.DataTable(data = cur_df.to_dict('index'), style_cell={'textAlign': 'left'},)
-    #?????
     return table
 
 
