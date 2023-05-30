@@ -28,6 +28,15 @@ def generate_table(table_dict):
     return table
 
 
+def generate_df(table_dict):
+    cur_df = pd.DataFrame()
+    for item in table_dict.keys():
+        prefix, value = item
+        cur_df.loc[prefix, table_dict[item]] = value
+
+    return cur_df
+
+
 def generate_random_words(lexem_length: int, random_list_len: int):
     common_lexem = generate_random_lexem(lexem_length)
     miss_cnt = 0

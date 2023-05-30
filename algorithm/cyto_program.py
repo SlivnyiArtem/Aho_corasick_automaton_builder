@@ -1,17 +1,19 @@
 import dash
 import dash_bootstrap_components as dbc
 import dash_cytoscape as cyto
+import pandas as pd
 from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output, State
 
-from algorithm.generators import generate_random_words, generate_lambda_table
+from algorithm.generators import generate_random_words, generate_lambda_table, generate_df
 from algorithm.generators import generate_table
 from algorithm.processor import calculate
+from funcs import copy_to_excel
 
 app = dash.Dash(__name__)
 server = app.server
-
+cur_dic = {}
 style = {
     'display': 'flex',
     'flex-direction': 'row',
@@ -100,6 +102,8 @@ app.layout = html.Div(
             ],
             value='on'
         ),
+        html.Button("Download Excel", id="btn_xlsx", style=button_style),
+        dcc.Download(id="download-dataframe-xlsx"),
         dcc.Dropdown(
             id="dropdown-layout",
             options=[
@@ -177,6 +181,7 @@ app.layout = html.Div(
     prevent_initial_call=True,
 )
 def update_output(n_clicks_1, n_clicks_2, value, rnd_cnt):
+    global cur_dic
     triggered_id = dash.ctx.triggered_id
     if triggered_id == 'submit-random-generator-input':
         value = " ".join(generate_random_words(3, int(rnd_cnt)))
@@ -196,7 +201,9 @@ def update_output(n_clicks_1, n_clicks_2, value, rnd_cnt):
                 cy_nodes.append({"data": {"id": target, "label": target}})
             cy_edges.append(
                 {"data": {"source": source, "target": target, "label": visualize_dict[(source, target)]}})
-    return cy_edges + cy_nodes, generate_table(visualize_dict), generate_lambda_table(nodes)
+    cur_table = generate_table(visualize_dict)
+    cur_dic = visualize_dict
+    return cy_edges + cy_nodes, cur_table, generate_lambda_table(nodes)
 
 
 @app.callback(
@@ -241,6 +248,17 @@ def show_hide_element_2(visibility_state):
         return {'display': 'block'}
     if visibility_state == 'off':
         return {'display': 'none'}
+
+
+@app.callback(
+    Output("download-dataframe-xlsx", "data"),
+    Input("btn_xlsx", "n_clicks"),
+    prevent_initial_call=True,
+)
+def func_to_excel(n_clicks):
+    global cur_dic
+    a = generate_df(cur_dic)
+    return dcc.send_data_frame(a.to_excel, "myTable.xlsx", sheet_name="Sheet_name_1")
 
 
 if __name__ == "__main__":
